@@ -1,1 +1,5 @@
-console.log("Tic Tac Toe Maybe")
+const person = {
+	name: 'Ryan Christiani',
+};
+
+const testString = `My name is ${person.name}`;

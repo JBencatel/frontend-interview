@@ -1,6 +1,7 @@
 const gulp = require('gulp');
 const uglify = require('gulp-uglify')
 const concat = require('gulp-concat')
+const babel = require('gulp-babel');
 const sass = require('gulp-sass')
 
 gulp.task("html", () => {
@@ -9,7 +10,16 @@ gulp.task("html", () => {
 })
 
 gulp.task('scripts', () => {
-    return gulp.src('src/js/*.js').pipe(concat('main.js')).pipe(uglify()).pipe(gulp.dest('build/js'));
+    return gulp
+		.src('src/js/*.js')
+		.pipe(
+			babel({
+				presets: ['@babel/env'],
+			})
+		)
+		.pipe(concat('main.js'))
+		.pipe(uglify())
+		.pipe(gulp.dest('build/js'));
 })
 
 gulp.task('fonts', () => {
