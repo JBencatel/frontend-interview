@@ -1,24 +1,151 @@
 @import './colors';
 @import './fonts';
 
-body{
-    font-family: 'Glacial Indifference', sans-serif;
-    margin: 0;
+/* For mobile phones: */
+[class*='col-'] {
+	width: 100%;
 }
 
-#top-header{
-    height: 80px;
-    width: 100vw;
-    position: fixed;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-around;
-    background-color: $grey;
+@media only screen and (min-width: 600px) {
+	/* For tablets: */
+	.col-s-1 {
+		width: 8.33%;
+	}
+	.col-s-2 {
+		width: 16.66%;
+	}
+	.col-s-3 {
+		width: 25%;
+	}
+	.col-s-4 {
+		width: 33.33%;
+	}
+	.col-s-5 {
+		width: 41.66%;
+	}
+	.col-s-6 {
+		width: 50%;
+	}
+	.col-s-7 {
+		width: 58.33%;
+	}
+	.col-s-8 {
+		width: 66.66%;
+	}
+	.col-s-9 {
+		width: 75%;
+	}
+	.col-s-10 {
+		width: 83.33%;
+	}
+	.col-s-11 {
+		width: 91.66%;
+	}
+	.col-s-12 {
+		width: 100%;
+	}
+}
 
-    #title-container{
-        flex-direction: column;
-        justify-content: center;
-        text-align: right;
+@media only screen and (min-width: 768px) {
+	/* For desktop: */
+	.col-1 {
+		width: 8.33%;
+	}
+	.col-2 {
+		width: 16.66%;
+	}
+	.col-3 {
+		width: 25%;
+	}
+	.col-4 {
+		width: 33.33%;
+	}
+	.col-5 {
+		width: 41.66%;
+	}
+	.col-6 {
+		width: 50%;
+	}
+	.col-7 {
+		width: 58.33%;
+	}
+	.col-8 {
+		width: 66.66%;
+	}
+	.col-9 {
+		width: 75%;
+	}
+	.col-10 {
+		width: 83.33%;
+	}
+	.col-11 {
+		width: 91.66%;
+	}
+	.col-12 {
+		width: 100%;
+	}
+}
+
+@media (max-width: 600px) {
+	.content-to-hide {
+		display: none;
+	}
+}
+
+body {
+	font-family: 'Glacial Indifference', sans-serif;
+	margin: 0;
+}
+
+.outer-container {
+	margin: 0 10vw;
+}
+
+.row {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+}
+
+#top-header {
+	width: 100vw;
+	background-color: $grey;
+    
+  position: fixed;
+  top: 0;
+
+	#header-container {
+		height: 80px;
+		align-items: center;
+		justify-content: space-between;
+		flex-wrap: unset;
+	}
+
+	#title-container {
+		flex-direction: column;
+		justify-content: center;
+		text-align: right;
+	}
+}
+
+#profile-section {
+    height: 100vh;
+	align-items: center;
+	padding: 20px 0;
+
+    h1{
+        margin: 0.3em 0;
     }
+
+	p {
+        margin: 0.5em 0;
+        font-size: 1.1em;
+	}
+
+	#photo {
+		height: 150px;
+		width: 150px;
+		border-radius: 50%;
+		border: 1px solid $grey;
+	}
 }
