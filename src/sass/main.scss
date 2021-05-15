@@ -18,6 +18,10 @@ main {
 	overflow-y: auto;
 }
 
+p {
+	font-size: 1.1em;
+}
+
 .outer-container {
 	margin: 0 10vw;
 }
@@ -28,11 +32,16 @@ main {
 	flex-wrap: wrap;
 }
 
+.col {
+	display: flex;
+	flex-direction: column;
+}
+
 .section {
 	height: calc(100vh - 80px);
 	padding: 30px 10vw;
 	box-sizing: border-box;
-	
+
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -76,11 +85,6 @@ main {
 			margin: 0.3em 0;
 		}
 
-		p {
-			margin: 0.5em 0;
-			font-size: 1.1em;
-		}
-
 		#photo {
 			height: 250px;
 			width: 250px;
@@ -93,12 +97,6 @@ main {
 #tic-tac-toe-section {
 	background-color: $primary-light;
 	text-align: center;
-
-	#game-header {
-		p {
-			font-size: 1.1em;
-		}
-	}
 
 	#game-main {
 		width: 100%;
@@ -137,14 +135,14 @@ main {
 			}
 		}
 
-		#player-one {
+		#player-one-score {
 			order: 1;
 			@media (max-width: 600px) {
 				order: 2;
 			}
 		}
 
-		#player-two {
+		#player-two-score {
 			order: 3;
 			@media (max-width: 600px) {
 				order: 4;
@@ -169,6 +167,80 @@ main {
 				font-size: 4em;
 				margin: 0;
 			}
+		}
+	}
+}
+
+#stats-section {
+	text-align: center;
+
+	#game-victories {
+		justify-content: space-around;
+		.player {
+			@media (max-width: 600px) {
+				width: 50%;
+			}
+			.player-name {
+				margin-top: 0;
+				font-size: 1.5em;
+			}
+		}
+
+		.percentage-section {
+			@media (max-width: 600px) {
+				width: 50%;
+			}
+		}
+
+		.value {
+			height: 50px;
+			width: 50px;
+			margin: auto;
+			background-color: $primary-dark;
+			color: white;
+			font-weight: bold;
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+	}
+
+	#player-matches {
+		align-items: center;
+		#player-matches-states {
+			width: fit-content;
+			padding: 5px;
+
+			.state {
+				height: 20px;
+				width: 20px;
+				margin: 0 5px;
+				border: 1px solid $primary-dark;
+				border-radius: 50%;
+			}
+		}
+	}
+
+	#game-history {
+		margin-top: 20px;
+		align-items: center;
+		#match-winners {
+			width: fit-content;
+			padding: 5px;
+
+			.winner {
+				height: 20px;
+				width: 20px;
+				margin: 0 5px;
+				border: 1px solid $primary-dark;
+			}
+		}
+	}
+
+	#total-time {
+		p {
+			font-size: 1.5em;
 		}
 	}
 }

@@ -58,8 +58,8 @@
 					</header>
 
 					<div class="row" id="game-main">
-						<div class="col-4 player" id="player-one">
-							<h2>Player 1</h1>
+						<div class="col-4 player" id="player-one-score">
+							<h2>Player 1</h2>
 							<p class="victories">0</p>
 						</div>
 
@@ -67,20 +67,100 @@
 							<span class="btn" id="start-game-btn">Start game</span>
 						</div>
 
-						<div class="col-4 player" id="player-two">
-							<h2>Player 2</h1>
+						<div class="col-4 player" id="player-two-score">
+							<h2>Player 2</h2>
 							<p class="victories">0</p>
 						</div>
 
 						<div class="col-12" id="timer">
-							<h2 style="font-weight: normal;">00:00:00</h2>
+							<h2 style="font-weight: normal">00:00:00</h2>
 						</div>
 					</div>
 				</div>
 			</div>
 
 			<div class="section" id="stats-section">
-				<div class="row container"></div>
+				<header id="game-header" class="col-12">
+					<h2>Awesome statistics</h2>
+					<p>All statistics in place1</p>
+				</header>
+
+				<div class="row" style="justify-content: space-around">
+					<div class="col-4" id="game-victories">
+						<h3>Game victories %</h3>
+
+						<div class="row">
+							<div class="col-6 player" id="player-one-victories">
+								<p class="player-name">Player 1</p>
+
+								<div class="row" style="justify-content: center">
+									<div class="col col-4 percentage-section victory-percentage">
+										<div class="value">0%</div>
+										<p>V</p>
+									</div>
+
+									<div class="col col-4 percentage-section loss-percentage">
+										<div class="value">0%</div>
+										<p>L</p>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-6 player" id="player-two-victories">
+								<p class="player-name">Player 2</p>
+
+								<div class="row" style="justify-content: center">
+									<div class="col col-4 percentage-section victory-percentage">
+										<div class="value">0%</div>
+										<p>V</p>
+									</div>
+
+									<div class="col col-4 percentage-section loss-percentage">
+										<div class="value">0%</div>
+										<p>L</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="col col-4">
+						<div class="col" id="player-matches">
+							<h3>Player matches</h3>
+							<div class="row" id="player-matches-states">
+								<div class="state" id="match-state-1"></div>
+								<div class="state" id="match-state-2"></div>
+								<div class="state" id="match-state-3"></div>
+								<div class="state" id="match-state-4"></div>
+								<div class="state" id="match-state-5"></div>
+								<div class="state" id="match-state-6"></div>
+								<div class="state" id="match-state-7"></div>
+								<div class="state" id="match-state-8"></div>
+								<div class="state" id="match-state-9"></div>
+							</div>
+						</div>
+
+						<div class="col" id="game-history">
+							<h3>Game history</h3>
+							<div class="row" id="match-winners">
+								<div class="winner" id="winner-1"></div>
+								<div class="winner" id="winner-2"></div>
+								<div class="winner" id="winner-3"></div>
+								<div class="winner" id="winner-4"></div>
+								<div class="winner" id="winner-5"></div>
+								<div class="winner" id="winner-6"></div>
+								<div class="winner" id="winner-7"></div>
+								<div class="winner" id="winner-8"></div>
+								<div class="winner" id="winner-9"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div id="total-time" class="col-12">
+					<h3>Total time</h3>
+					<p>00:00:00</p>
+				</div>
 			</div>
 
 			<footer id="footer">
