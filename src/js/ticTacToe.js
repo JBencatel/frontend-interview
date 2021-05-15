@@ -200,6 +200,11 @@ function handleGameWin(winCondition) {
 	highlightVictoryLines(winCondition);
 
 	handleGameEnd(`Player ${currentPlayer} has won!`);
+
+	if (players[1].score === 5 || players[2].score === 5) {
+		var statsSection = document.getElementById('stats-section');
+		statsSection.scrollIntoView();
+	}
 }
 
 function updatePlayedMatches() {

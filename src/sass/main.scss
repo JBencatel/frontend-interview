@@ -3,7 +3,6 @@
 @import './_grid';
 
 html {
-	scroll-behavior: smooth;
 	overflow: hidden;
 }
 
@@ -16,6 +15,7 @@ main {
 	position: relative;
 	height: calc(100vh - 80px);
 	overflow-y: auto;
+	scroll-behavior: smooth;
 }
 
 p {
