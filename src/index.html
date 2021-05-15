@@ -26,11 +26,11 @@
 		<main>
 			<div class="section" id="profile-section">
 				<div class="row container">
-					<div class="col-2 row" style="justify-content: center">
+					<div class="col-3 row" style="justify-content: center">
 						<img id="photo" src="images/profile_pic.jpg" alt="Profile picture" />
 					</div>
 
-					<div class="col-4">
+					<div class="col-3">
 						<div style="padding: 0 20px">
 							<h1 style="font-weight: normal">Joana Bencatel</h1>
 							<p>Age: 28</p>
@@ -39,7 +39,8 @@
 						</div>
 					</div>
 
-					<div class="col-6 content-to-hide" style="text-align: right">
+					<div class="col-1"></div>
+					<div class="col-5 content-to-hide" style="text-align: right">
 						<p>About me:</p>
 						<p>
 							My name is Joana Bencatel and I'm a Software Developer, with a background in Biology, but my
@@ -61,15 +62,16 @@
 					</header>
 
 					<div class="row" id="game-main">
-						<div class="col-4 player" id="player-one-score">
+						<div class="col-4 player" id="player-1-score">
 							<h2>Player 1</h2>
 							<p class="victories">0</p>
+							<p class="turn">It's your turn! ;)</p>
 						</div>
 
 						<div class="col-4 row" id="game-area">
 							<span class="btn" id="start-game-btn">Start game</span>
-							
-							<div class="grid-container">
+
+							<div id="grid-container">
 								<div data-cell-index="0" class="cell"></div>
 								<div data-cell-index="1" class="cell"></div>
 								<div data-cell-index="2" class="cell"></div>
@@ -80,11 +82,17 @@
 								<div data-cell-index="7" class="cell"></div>
 								<div data-cell-index="8" class="cell"></div>
 							</div>
+
+							<div id="game-over">
+								<span id="game-result">message</span>
+								<span class="btn" id="start-over-btn">Start over?</span>
+							</div>
 						</div>
 
-						<div class="col-4 player" id="player-two-score">
+						<div class="col-4 player" id="player-2-score">
 							<h2>Player 2</h2>
 							<p class="victories">0</p>
+							<p class="turn">It's your turn! ;)</p>
 						</div>
 
 						<div class="col-12" id="timer">
@@ -105,33 +113,33 @@
 						<h3>Game victories %</h3>
 
 						<div class="row">
-							<div class="col-6 player" id="player-one-victories">
+							<div class="col-6 player" id="player-1-victories">
 								<p class="player-name">Player 1</p>
 
 								<div class="row" style="justify-content: center">
 									<div class="col col-4 percentage-section victory-percentage">
-										<div class="value">0%</div>
+										<div class="value draw">0%</div>
 										<p>V</p>
 									</div>
 
 									<div class="col col-4 percentage-section loss-percentage">
-										<div class="value">0%</div>
+										<div class="value draw">0%</div>
 										<p>L</p>
 									</div>
 								</div>
 							</div>
 
-							<div class="col-6 player" id="player-two-victories">
+							<div class="col-6 player" id="player-2-victories">
 								<p class="player-name">Player 2</p>
 
 								<div class="row" style="justify-content: center">
 									<div class="col col-4 percentage-section victory-percentage">
-										<div class="value">0%</div>
+										<div class="value draw">0%</div>
 										<p>V</p>
 									</div>
 
 									<div class="col col-4 percentage-section loss-percentage">
-										<div class="value">0%</div>
+										<div class="value draw">0%</div>
 										<p>L</p>
 									</div>
 								</div>
@@ -141,32 +149,32 @@
 
 					<div class="col col-4">
 						<div class="col" id="player-matches">
-							<h3>Player matches</h3>
+							<h3>Played matches</h3>
 							<div class="row" id="player-matches-states">
-								<div class="state" data-match-index="0"></div>
-								<div class="state" data-match-index="1"></div>
-								<div class="state" data-match-index="2"></div>
-								<div class="state" data-match-index="3"></div>
-								<div class="state" data-match-index="4"></div>
-								<div class="state" data-match-index="5"></div>
-								<div class="state" data-match-index="6"></div>
-								<div class="state" data-match-index="7"></div>
-								<div class="state" data-match-index="8"></div>
+								<div class="game-match"></div>
+								<div class="game-match"></div>
+								<div class="game-match"></div>
+								<div class="game-match"></div>
+								<div class="game-match"></div>
+								<div class="game-match"></div>
+								<div class="game-match"></div>
+								<div class="game-match"></div>
+								<div class="game-match"></div>
 							</div>
 						</div>
 
 						<div class="col" id="game-history">
 							<h3>Game history</h3>
 							<div class="row" id="match-winners">
-								<div class="winner" data-match-index="0"></div>
-								<div class="winner" data-match-index="1"></div>
-								<div class="winner" data-match-index="2"></div>
-								<div class="winner" data-match-index="3"></div>
-								<div class="winner" data-match-index="4"></div>
-								<div class="winner" data-match-index="5"></div>
-								<div class="winner" data-match-index="6"></div>
-								<div class="winner" data-match-index="7"></div>
-								<div class="winner" data-match-index="8"></div>
+								<div class="winner"></div>
+								<div class="winner"></div>
+								<div class="winner"></div>
+								<div class="winner"></div>
+								<div class="winner"></div>
+								<div class="winner"></div>
+								<div class="winner"></div>
+								<div class="winner"></div>
+								<div class="winner"></div>
 							</div>
 						</div>
 					</div>

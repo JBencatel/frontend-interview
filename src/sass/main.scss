@@ -128,23 +128,26 @@ p {
 				order: 1;
 			}
 
-			#start-game-btn {
+			#start-game-btn,
+			#start-over-btn {
 				font-size: 1.5em;
 				font-weight: bold;
 
 				&:hover {
 					color: $primary-button;
 				}
+			}
 
-				.on-going-game {
+			#start-game-btn {
+				&.on-going-game {
 					display: none;
 				}
 			}
 
-			.grid-container {
+			#grid-container {
 				display: none;
 
-				.on-going-game {
+				&.on-going-game {
 					display: grid;
 					width: 100%;
 					height: 100%;
@@ -158,28 +161,44 @@ p {
 				box-shadow: 0 0 0 1px #333333;
 				border: 1px solid #333333;
 				cursor: pointer;
-			}
-		}
 
-		#player-one-score {
-			order: 1;
-			@media (max-width: 600px) {
-				order: 2;
-			}
-		}
+				display: flex;
+				align-items: center;
+				justify-content: center;
 
-		#player-two-score {
-			order: 3;
-			@media (max-width: 600px) {
-				order: 4;
+				img {
+					max-width: 90%;
+					max-height: 90%;
+				}
 			}
-		}
 
-		#timer {
-			order: 4;
-			@media (max-width: 600px) {
-				order: 3;
-				width: 33.3%;
+			#game-over {
+				display: none;
+
+				&.active {
+					height: 80vmin;
+					width: 80vmin;
+					position: absolute;
+					background-color: rgba(0, 0, 0, 0.7);
+					display: flex;
+					flex-direction: column;
+					align-items: center;
+					justify-content: center;
+					color: white;
+
+					@media (min-width: 600px) {
+						height: 50vmin;
+						width: 50vmin;
+					}
+
+					#game-result {
+						font-size: 1.5em;
+					}
+
+					span {
+						margin: 1em;
+					}
+				}
 			}
 		}
 
@@ -192,6 +211,36 @@ p {
 			.victories {
 				font-size: 4em;
 				margin: 0;
+			}
+
+			.turn {
+				visibility: hidden;
+
+				&.active {
+					visibility: visible;
+				}
+			}
+		}
+
+		#player-1-score {
+			order: 1;
+			@media (max-width: 600px) {
+				order: 2;
+			}
+		}
+
+		#player-2-score {
+			order: 3;
+			@media (max-width: 600px) {
+				order: 4;
+			}
+		}
+
+		#timer {
+			order: 4;
+			@media (max-width: 600px) {
+				order: 3;
+				width: 33.3%;
 			}
 		}
 	}
@@ -222,13 +271,26 @@ p {
 			height: 50px;
 			width: 50px;
 			margin: auto;
-			background-color: $primary-dark;
-			color: white;
 			font-weight: bold;
 			border-radius: 50%;
 			display: flex;
 			align-items: center;
 			justify-content: center;
+
+			&.winning {
+				background-color: $green;
+				color: white;
+			}
+
+			&.losing {
+				background-color: red;
+				color: white;
+			}
+
+			&.draw {
+				background-color: $yellow;
+				color: $primary-dark;
+			}
 		}
 	}
 
@@ -238,12 +300,16 @@ p {
 			width: fit-content;
 			padding: 5px;
 
-			.state {
+			.game-match {
 				height: 20px;
 				width: 20px;
 				margin: 0 5px;
 				border: 1px solid $primary-dark;
 				border-radius: 50%;
+
+				&.active {
+					background-color: $primary-dark;
+				}
 			}
 		}
 	}
@@ -260,6 +326,9 @@ p {
 				width: 20px;
 				margin: 0 5px;
 				border: 1px solid $primary-dark;
+				display: flex;
+				align-items: center;
+				justify-content: center;
 			}
 		}
 	}
