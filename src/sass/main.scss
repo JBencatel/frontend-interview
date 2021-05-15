@@ -12,7 +12,7 @@ body {
 	margin: 0;
 }
 
-.main {
+main {
 	position: relative;
 	height: calc(100vh - 80px);
 	overflow-y: auto;
@@ -32,6 +32,10 @@ body {
 	height: calc(100vh - 80px);
 	padding: 30px 10vw;
 	box-sizing: border-box;
+	
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
 }
 
 .btn {
@@ -125,10 +129,10 @@ body {
 
 			#start-game-btn {
 				font-size: 1.5em;
-					font-weight: bold;
+				font-weight: bold;
 
-				&:hover{
-					color: $primary-button
+				&:hover {
+					color: $primary-button;
 				}
 			}
 		}
