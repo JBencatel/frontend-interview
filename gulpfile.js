@@ -1,16 +1,17 @@
 const gulp = require('gulp');
+const imagemin = require('gulp-imagemin')
 const uglify = require('gulp-uglify')
 const concat = require('gulp-concat')
 const babel = require('gulp-babel');
 const sass = require('gulp-sass')
 
 gulp.task("html", () => {
-    return gulp.src("src/*.html")
-        .pipe(gulp.dest("build"))
+	return gulp.src("src/*.html")
+		.pipe(gulp.dest("build"))
 })
 
 gulp.task('scripts', () => {
-    return gulp
+	return gulp
 		.src('src/js/*.js')
 		.pipe(
 			babel({
@@ -23,21 +24,22 @@ gulp.task('scripts', () => {
 })
 
 gulp.task('images', () => {
-	return gulp.src('src/assets/images/*').pipe(gulp.dest('build/images'));
+	return gulp.src('src/assets/images/*')
+		.pipe(imagemin()).pipe(gulp.dest('build/images'));
 });
 
 gulp.task('fonts', () => {
-    return gulp.src('src/assets/fonts/*').pipe(gulp.dest('build/fonts'));
+	return gulp.src('src/assets/fonts/*').pipe(gulp.dest('build/fonts'));
 })
 
 gulp.task('sass', () => {
-    return gulp.src('src/sass/*.scss').pipe(sass().on('error', sass.logError)).pipe(gulp.dest('build/css'));
+	return gulp.src('src/sass/*.scss').pipe(sass().on('error', sass.logError)).pipe(gulp.dest('build/css'));
 })
 
 gulp.task('default', gulp.series('html', 'scripts', 'images', 'fonts', 'sass'));
 
 gulp.task('watch', () => {
-    gulp.watch('src/*.html', gulp.series('html'));
-    gulp.watch('src/js/*.js', gulp.series('scripts'));
-    gulp.watch('src/sass/*.scss', gulp.series('sass'));
+	gulp.watch('src/*.html', gulp.series('html'));
+	gulp.watch('src/js/*.js', gulp.series('scripts'));
+	gulp.watch('src/sass/*.scss', gulp.series('sass'));
 })
