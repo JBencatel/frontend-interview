@@ -2,9 +2,20 @@
 @import './_fonts';
 @import './_grid';
 
+html {
+	scroll-behavior: smooth;
+	overflow: hidden;
+}
+
 body {
 	font-family: 'Glacial Indifference', sans-serif;
 	margin: 0;
+}
+
+.main {
+	position: relative;
+	height: calc(100vh - 80px);
+	overflow-y: auto;
 }
 
 .outer-container {
@@ -18,8 +29,9 @@ body {
 }
 
 .section {
-	height: 100vh;
-	padding: 0 10vw;
+	height: calc(100vh - 80px);
+	padding: 30px 10vw;
+	box-sizing: border-box;
 }
 
 .btn {
@@ -28,9 +40,9 @@ body {
 
 #top-header {
 	width: 100vw;
+	height: fit-content;
+	box-sizing: border-box;
 	background-color: $grey;
-	position: fixed;
-	top: 0;
 
 	#header-container {
 		height: 80px;
@@ -52,6 +64,10 @@ body {
 		height: 100%;
 		align-items: center;
 		justify-content: center;
+		@media (max-width: 600px) {
+			flex-direction: column;
+		}
+
 		h1 {
 			margin: 0.3em 0;
 		}
@@ -72,6 +88,73 @@ body {
 
 #tic-tac-toe-section {
 	background-color: $primary-light;
+	text-align: center;
+
+	#game-header {
+		p {
+			font-size: 1.1em;
+		}
+	}
+
+	#game-main {
+		width: 100%;
+		align-items: center;
+
+		@media (max-width: 600px) {
+			align-items: flex-start;
+		}
+
+		#game-area {
+			background-color: white;
+			border: 2px solid $grey;
+			box-sizing: border-box;
+
+			order: 2;
+			@media (max-width: 600px) {
+				order: 1;
+			}
+		}
+
+		#game-area:after {
+			content: '';
+			display: block;
+			padding-bottom: 100%;
+		}
+
+		#player-one {
+			order: 1;
+			@media (max-width: 600px) {
+				order: 2;
+			}
+		}
+
+		#player-two {
+			order: 3;
+			@media (max-width: 600px) {
+				order: 4;
+			}
+		}
+
+		#timer {
+			order: 4;
+			@media (max-width: 600px) {
+				order: 3;
+				width: 33.3%;
+			}
+		}
+
+		.player {
+			flex-direction: column;
+			@media (max-width: 600px) {
+				width: 33.3%;
+			}
+
+			.victories {
+				font-size: 4em;
+				margin: 0;
+			}
+		}
+	}
 }
 
 #footer {
