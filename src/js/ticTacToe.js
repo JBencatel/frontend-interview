@@ -21,16 +21,15 @@ let players = {
 	},
 };
 
-let gameActive = false;
 let currentPlayer = 1;
-let gameState = [null, null, null, null, null, null, null, null, null];
+let matchStates = [null, null, null, null, null, null, null, null, null];
 
-let currentGameTime = {
+let matchTime = {
 	value: 0,
 	display: null,
 };
 
-let totalGameTime = {
+let gameTime = {
 	value: 0,
 	display: null,
 };
@@ -47,7 +46,6 @@ const winningConditions = [
 ];
 
 let playedMatches = 0;
-let gameHistory = [];
 
 let gameAreaDisplay;
 let statsAreaDisplay;
@@ -67,8 +65,8 @@ window.onload = () => {
 		losses: document.querySelector('#player-2-victories .loss-percentage .value'),
 	};
 
-	currentGameTime.display = document.querySelector('#timer h2');
-	totalGameTime.display = document.querySelector('#total-time p');
+	matchTime.display = document.querySelector('#timer h2');
+	gameTime.display = document.querySelector('#total-time p');
 
 	gameAreaDisplay = {
 		startButton: document.querySelector('#start-game-btn'),
@@ -91,15 +89,12 @@ window.onload = () => {
 	};
 
 	gameAreaDisplay.startButton.addEventListener('click', handleStartGame);
-
 	gameAreaDisplay.gameOver.button.addEventListener('click', handleStartOver);
-
 	gameAreaDisplay.cells.forEach((cell) => cell.addEventListener('click', handleCellClick));
 };
 
 function handleStartGame() {
-	gameActive = true;
-	gameState = [null, null, null, null, null, null, null, null, null];
+	matchStates = [null, null, null, null, null, null, null, null, null];
 	gameAreaDisplay.cells.forEach((cell) => (cell.innerHTML = ''));
 
 	gameAreaDisplay.startButton.classList.add('on-going-game');
@@ -113,10 +108,39 @@ function handleStartGame() {
 
 function handleStartOver() {
 	gameAreaDisplay.gameOver.display.classList.remove('active');
-	currentGameTime.value = 0;
-	currentGameTime.display.innerHTML = '00:00:00';
+	matchTime.value = 0;
+	matchTime.display.innerHTML = '00:00:00';
+
+	if (players[1].score === 5 || players[2].score === 5) {
+		resetGameAreaValues();
+		resetStatsAreaValues();
+	}
 
 	handleStartGame();
+}
+
+function resetGameAreaValues() {
+	resetPlayerValues(players[1]);
+	resetPlayerValues(players[2]);
+}
+
+function resetPlayerValues(player) {
+	player.score = 0;
+	player.display.score.innerHTML = 0;
+	updatePlayerScores(player, 0, 0);
+}
+
+function resetStatsAreaValues() {
+	playedMatches = 0;
+	for (let match of statsAreaDisplay.matches) {
+		match.classList.remove('active');
+	}
+	for (let winner of statsAreaDisplay.winners) {
+		winner.innerHTML = '';
+	}
+
+	gameTime.value = 0;
+	gameTime.display.innerHTML = '00:00:00';
 }
 
 let interval;
@@ -124,8 +148,8 @@ function setTimer() {
 	interval = setInterval(setTime, 1000);
 
 	function setTime() {
-		++currentGameTime.value;
-		currentGameTime.display.innerHTML = getParsedTime(currentGameTime.value);
+		++matchTime.value;
+		matchTime.display.innerHTML = getParsedTime(matchTime.value);
 	}
 }
 
@@ -152,7 +176,7 @@ function handleCellClick(clickedCellEvent) {
 	const clickedCell = clickedCellEvent.target;
 	const clickedCellIndex = parseInt(clickedCell.getAttribute('data-cell-index'));
 
-	if (gameState[clickedCellIndex] !== null || !gameActive) {
+	if (matchStates[clickedCellIndex] !== null) {
 		return;
 	}
 
@@ -160,19 +184,18 @@ function handleCellClick(clickedCellEvent) {
 }
 
 function handleCellPlayed(cell, index) {
-	gameState[index] = currentPlayer;
+	matchStates[index] = currentPlayer;
 	let playerIcon = players[currentPlayer].icon + '_dark';
 	cell.innerHTML = `<img src="images/${playerIcon}.svg" alt="x icon" />`;
 
-	handleResultValidation();
+	validateTurnResult();
 }
 
-function handleResultValidation() {
-	for (let i = 0; i < 8; i++) {
-		const winCondition = winningConditions[i];
-		let a = gameState[winCondition[0]];
-		let b = gameState[winCondition[1]];
-		let c = gameState[winCondition[2]];
+function validateTurnResult() {
+	for (const winCondition of winningConditions) {
+		let a = matchStates[winCondition[0]];
+		let b = matchStates[winCondition[1]];
+		let c = matchStates[winCondition[2]];
 
 		if (a === null || b === null || c === null) {
 			continue;
@@ -183,19 +206,19 @@ function handleResultValidation() {
 		}
 	}
 
-	let roundDraw = !gameState.includes(null);
+	let roundDraw = !matchStates.includes(null);
 	if (roundDraw) {
 		handleGameEnd(`Game ended in a draw!`);
 		return;
 	}
 
-	handlePlayerChange();
+	changeActivePlayers();
 }
 
 function handleGameWin(winCondition) {
 	updatePlayedMatches();
 	updateScores();
-	updateTotalGameTime();
+	updateGameTime();
 
 	highlightVictoryLines(winCondition);
 
@@ -228,9 +251,6 @@ function updatePlayerScores(player, victoriesPercentage, lossesPercentage) {
 	player.display.victories.innerHTML = victoriesPercentage + '%';
 	player.display.losses.innerHTML = lossesPercentage + '%';
 
-	player.display.victories.classList.remove('winning', 'losing', 'draw');
-	player.display.losses.classList.remove('winning', 'losing', 'draw');
-
 	let newClass = 'draw';
 	if (victoriesPercentage === lossesPercentage) {
 		newClass = 'draw';
@@ -240,13 +260,16 @@ function updatePlayerScores(player, victoriesPercentage, lossesPercentage) {
 		newClass = 'losing';
 	}
 
+	player.display.victories.classList.remove('winning', 'losing', 'draw');
 	player.display.victories.classList.add(newClass);
+
+	player.display.losses.classList.remove('winning', 'losing', 'draw');
 	player.display.losses.classList.add(newClass);
 }
 
-function updateTotalGameTime() {
-	totalGameTime.value += currentGameTime.value;
-	totalGameTime.display.innerHTML = getParsedTime(totalGameTime.value);
+function updateGameTime() {
+	gameTime.value += matchTime.value;
+	gameTime.display.innerHTML = getParsedTime(gameTime.value);
 }
 
 function highlightVictoryLines(winCondition) {
@@ -257,7 +280,6 @@ function highlightVictoryLines(winCondition) {
 }
 
 function handleGameEnd(message) {
-	gameActive = false;
 	clearInterval(interval);
 
 	gameAreaDisplay.gameOver.message.innerHTML = message;
@@ -266,7 +288,7 @@ function handleGameEnd(message) {
 	players[currentPlayer].display.turn.classList.remove('active');
 }
 
-function handlePlayerChange() {
+function changeActivePlayers() {
 	let nextPlayer = currentPlayer === 1 ? 2 : 1;
 
 	players[nextPlayer].display.turn.classList.add('active');
