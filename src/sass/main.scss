@@ -109,16 +109,28 @@ body {
 			border: 2px solid $grey;
 			box-sizing: border-box;
 
+			justify-content: center;
+			align-items: center;
+
 			order: 2;
 			@media (max-width: 600px) {
 				order: 1;
 			}
-		}
 
-		#game-area:after {
-			content: '';
-			display: block;
-			padding-bottom: 100%;
+			&:after {
+				content: '';
+				display: block;
+				padding-bottom: 100%;
+			}
+
+			#start-game-btn {
+				font-size: 1.5em;
+					font-weight: bold;
+
+				&:hover{
+					color: $primary-button
+				}
+			}
 		}
 
 		#player-one {
