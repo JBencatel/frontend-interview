@@ -2,8 +2,10 @@ const gulp = require('gulp');
 const imagemin = require('gulp-imagemin')
 const uglify = require('gulp-uglify')
 const concat = require('gulp-concat')
-const babel = require('gulp-babel');
+const babel = require('gulp-babel')
 const sass = require('gulp-sass')
+
+const jest = require('gulp-jest').default
 
 /**
  * Copies all development html files to the build folder
@@ -17,6 +19,7 @@ gulp.task("html", () => {
  * Transpiles and concatenates all development js files into a single main.js file, minifies it and includes it in the build folder.
  */
 gulp.task('scripts', () => {
+
 	return gulp
 		.src('src/js/*.js')
 		.pipe(
@@ -28,6 +31,18 @@ gulp.task('scripts', () => {
 		.pipe(uglify())
 		.pipe(gulp.dest('build/js'));
 })
+
+/**
+ * Runs the units tests
+ */
+gulp.task('unitTest', () => {
+ return gulp.src('src/tests').pipe(
+		jest({
+			preprocessorIgnorePatterns: ['<rootDir>/dist/', '<rootDir>/node_modules/'],
+			automock: false,
+		})
+ );
+});
 
 /**
  * Copies the images in the development folder, minifies them and places than in the build folder.
@@ -54,7 +69,7 @@ gulp.task('sass', () => {
 /**
  * Builds/compiles the entire application.
  */
-gulp.task('default', gulp.series('html', 'scripts', 'images', 'fonts', 'sass'));
+gulp.task('default', gulp.series('html', 'scripts', 'unitTest', 'images', 'fonts', 'sass'));
 
 /**
  * Watches for changes in the development html, js and scss files to update the build folder.
