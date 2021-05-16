@@ -19,9 +19,11 @@ let players = {
 	},
 };
 
+let gameNrRowsPerColumns = 3;
+let gridState = [];
+
 let matchFirstPlayer = 1;
 let currentPlayer = 1;
-let matchStates = [null, null, null, null, null, null, null, null, null];
 
 let matchTime = {
 	value: 0,
@@ -32,17 +34,6 @@ let gameTime = {
 	value: 0,
 	display: null,
 };
-
-const winningConditions = [
-	[0, 1, 2],
-	[3, 4, 5],
-	[6, 7, 8],
-	[0, 3, 6],
-	[1, 4, 7],
-	[2, 5, 8],
-	[0, 4, 8],
-	[2, 4, 6],
-];
 
 let playedMatches = 0;
 
@@ -74,8 +65,6 @@ window.onload = () => {
 
 		gameArea: document.querySelector('#grid-container'),
 
-		cells: document.querySelectorAll('.cell'),
-
 		matchOver: {
 			display: document.querySelector('#game-over'),
 			message: document.querySelector('#game-over #game-result'),
@@ -91,7 +80,6 @@ window.onload = () => {
 
 	gameAreaDisplay.gameStart.buttons.forEach((marker) => marker.addEventListener('click', handleGameStart));
 	gameAreaDisplay.matchOver.button.addEventListener('click', handleStartOver);
-	gameAreaDisplay.cells.forEach((cell) => cell.addEventListener('click', handleCellClick));
 };
 
 /**
@@ -106,6 +94,7 @@ function handleGameStart(markerClickEvent) {
 
 	gameAreaDisplay.gameStart.wholeDisplay.classList.add('on-going-game');
 	gameAreaDisplay.gameArea.classList.add('on-going-game');
+	prepareGridViewElements();
 
 	matchFirstPlayer = 1;
 	handleMatchStart();
@@ -125,6 +114,41 @@ function setPlayersIcons(player1Marker) {
 }
 
 /**
+ * Create grid in game area
+ */
+function prepareGridViewElements() {
+	let gridContainer = document.getElementById('grid-container');
+	gridContainer.style.gridTemplateColumns = `repeat(${gameNrRowsPerColumns}, 1fr)`;
+	gridContainer.style.gridTemplateRows = `repeat(${gameNrRowsPerColumns}, 1fr)`;
+
+	for (let rowIndex = 0; rowIndex < gameNrRowsPerColumns; rowIndex++) {
+		for (let colIndex = 0; colIndex < gameNrRowsPerColumns; colIndex++) {
+			let cell = createGridCellElement(rowIndex, colIndex);
+			gridContainer.appendChild(cell);
+		}
+	}
+
+	gameAreaDisplay.cells = document.querySelectorAll('.cell');
+	gameAreaDisplay.cells.forEach((cell) => cell.addEventListener('click', handleCellClick));
+}
+
+/**
+ * Create individual cell HTML element
+ *
+ * @param Number row
+ * @param Number col
+ * @returns
+ */
+function createGridCellElement(row, col) {
+	var elem = document.createElement('div');
+	elem.setAttribute('class', 'cell');
+	elem.setAttribute('data-row', row);
+	elem.setAttribute('data-col', col);
+	elem.setAttribute('id', 'cell' + row + col);
+	return elem;
+}
+
+/**
  * Adds the player turn marker to the view.
  *
  * @param Number playerID
@@ -132,7 +156,7 @@ function setPlayersIcons(player1Marker) {
  */
 function addPlayerMarkerElement(playerID, marker) {
 	let playerMarkerElement = createPlayerMarkerElement(playerID, marker);
-	document.getElementById(`player-${playerID}-score`).appendChild(addPlayerMarkerElement);
+	document.getElementById(`player-${playerID}-score`).appendChild(playerMarkerElement);
 	players[playerID].display.turn = document.querySelector(`#player-${playerID}-turn-marker`);
 }
 
@@ -142,7 +166,7 @@ function addPlayerMarkerElement(playerID, marker) {
  * @param String marker
  * @returns a new html element.
  */
-export function createPlayerMarkerElement(playerID, marker) {
+/* export */ function createPlayerMarkerElement(playerID, marker) {
 	var elem = document.createElement('img');
 	elem.setAttribute('src', `images/${marker}_dark.svg`);
 	elem.setAttribute('class', 'turn');
@@ -152,26 +176,10 @@ export function createPlayerMarkerElement(playerID, marker) {
 }
 
 /**
- * Handles the initialization of a new match or game.
- */
-function handleStartOver() {
-	gameAreaDisplay.matchOver.display.classList.remove('active');
-	matchTime.value = 0;
-	matchTime.display.innerHTML = '00:00:00';
-
-	if (hasGameEnded()) {
-		resetGame();
-	} else {
-		matchFirstPlayer = matchFirstPlayer === 1 ? 2 : 1;
-		handleMatchStart();
-	}
-}
-
-/**
  * Handles the matches start.
  */
 function handleMatchStart() {
-	matchStates = [null, null, null, null, null, null, null, null, null];
+	prepareGridStateMatrix();
 	gameAreaDisplay.cells.forEach((cell) => {
 		cell.innerHTML = '';
 		cell.classList.remove('disabled');
@@ -184,58 +192,19 @@ function handleMatchStart() {
 }
 
 /**
- * Resets the game
+ * Creates the matrix that registers the match grid state
  */
-function resetGame() {
-	resetStatsAreaValues();
-	resetGameAreaValues();
-}
-
-/**
- * Resets all necessary game area variables and displays to start a new game.
- */
-function resetGameAreaValues() {
-	resetPlayerValues(1);
-	resetPlayerValues(2);
-
-	gameAreaDisplay.gameStart.wholeDisplay.classList.remove('on-going-game');
-	gameAreaDisplay.gameArea.classList.remove('on-going-game');
-}
-
-/**
- * Resets the local value and display of a given player's total score.
- * @param Object player
- */
-function resetPlayerValues(playerID) {
-	let player = players[playerID];
-	player.score = 0;
-	player.icon = null;
-	player.display.score.innerHTML = 0;
-
-	var element = document.getElementById(`player-${playerID}-turn-marker`);
-	element.parentNode.removeChild(element);
-
-	updatePlayerGameVictoriesStats(player, 0);
-}
-
-/**
- * Resets all local and display values regarding the stats section.
- */
-function resetStatsAreaValues() {
-	playedMatches = 0;
-	for (let match of statsAreaDisplay.matches) {
-		match.classList.remove('active');
+function prepareGridStateMatrix() {
+	gridState = [];
+	for (let rowIndex = 0; rowIndex < gameNrRowsPerColumns; rowIndex++) {
+		gridState.push([]);
+		for (let colIndex = 0; colIndex < gameNrRowsPerColumns; colIndex++) {
+			gridState[rowIndex].push(null);
+		}
 	}
-	for (let winner of statsAreaDisplay.winners) {
-		winner.innerHTML = '';
-	}
-
-	gameTime.value = 0;
-	gameTime.display.innerHTML = '00:00:00';
 }
 
 let interval;
-
 /**
  * Sets the timer for the ongoing match.
  */
@@ -254,7 +223,7 @@ function setTimer() {
  * @param Number time (in seconds)
  * @returns the time converted in hours:minutes:seconds.
  */
-export function parseTime(time) {
+/* export */ function parseTime(time) {
 	let hours = padTimeUnit(Math.floor(time / 3600));
 	let remainder = time % 3600;
 	let minutes = padTimeUnit(Math.floor(remainder / 60));
@@ -270,7 +239,7 @@ export function parseTime(time) {
  * @param Number val - number to adapt.
  * @returns a 2 digit number.
  */
-export function padTimeUnit(val) {
+/* export */ function padTimeUnit(val) {
 	var valString = val + '';
 	return valString.length < 2 ? '0' + valString : valString;
 }
@@ -283,10 +252,11 @@ export function padTimeUnit(val) {
  */
 function handleCellClick(clickedCellEvent) {
 	const clickedCell = clickedCellEvent.target;
-	const clickedCellIndex = parseInt(clickedCell.getAttribute('data-cell-index'));
+	const clickedCellRow = parseInt(clickedCell.getAttribute('data-row'));
+	const clickedCellCol = parseInt(clickedCell.getAttribute('data-col'));
 
-	if (matchStates[clickedCellIndex] === null) {
-		handleCellPlayed(clickedCell, clickedCellIndex);
+	if (gridState[clickedCellRow][clickedCellCol] === null) {
+		handleCellPlayed(clickedCell, clickedCellRow, clickedCellCol);
 	}
 }
 
@@ -296,13 +266,13 @@ function handleCellClick(clickedCellEvent) {
  * @param Object cell
  * @param Number index
  */
-function handleCellPlayed(cell, index) {
-	matchStates[index] = currentPlayer;
+function handleCellPlayed(cell, row, col) {
+	gridState[row][col] = currentPlayer;
 	let playerIcon = players[currentPlayer].icon + '_dark';
 	cell.innerHTML = `<img src="images/${playerIcon}.svg" alt="x icon" />`;
 	cell.classList.add('disabled');
 
-	validateTurnResult();
+	validateTurnResult(row, col);
 }
 
 /**
@@ -310,22 +280,22 @@ function handleCellPlayed(cell, index) {
  *
  * @returns upon game end or player change.
  */
-function validateTurnResult() {
-	for (const winCondition of winningConditions) {
-		let a = matchStates[winCondition[0]];
-		let b = matchStates[winCondition[1]];
-		let c = matchStates[winCondition[2]];
+function validateTurnResult(row, col) {
+	let possibleSets = {
+		horizontal: { rowChange: 0, colChange: 1 },
+		vertical: { rowChange: 1, colChange: 0 },
+		diagonal1: { rowChange: 1, colChange: 1 },
+		diagonal2: { rowChange: 1, colChange: -1 },
+	};
 
-		if (a === null || b === null || c === null) {
-			continue;
-		}
-		if (a === b && b === c) {
-			handleMatchWin(winCondition);
+	for (const set of Object.values(possibleSets)) {
+		if (isWinningSet(row, col, set.rowChange, set.colChange)) {
 			return;
-		}
+		} 
 	}
 
-	let roundDraw = !matchStates.includes(null);
+	let flatGridState = gridState.flat();
+	let roundDraw = !flatGridState.includes(null);
 	if (roundDraw) {
 		handleMatchEnd('Match ended in a draw!');
 		return;
@@ -334,17 +304,50 @@ function validateTurnResult() {
 	toggleActivePlayer();
 }
 
+function isWinningSet(row, col, rowChange, colChange) {
+	let winningSet = [];
+	if (isCellFilled(row + rowChange, col + colChange)) {
+		winningSet.push({ row: row + rowChange, col: col + colChange });
+		if (isCellFilled(row + 2 * rowChange, col + 2 * colChange)) {
+			winningSet.push({ row: row + 2 * rowChange, col: col + 2 * colChange });
+		}
+	}
+	if (isCellFilled(row - rowChange, col - colChange)) {
+		winningSet.push({ row: row - rowChange, col: col - colChange });
+		if (isCellFilled(row - 2 * rowChange, col - 2 * colChange)) {
+			winningSet.push({ row: row - 2 * rowChange, col: col - 2 * colChange });
+		}
+	}
+	if (
+		winningSet.length === 2 &&
+		doesCellHaveCurrentUserMarker(winningSet[0].row, winningSet[0].col) &&
+		doesCellHaveCurrentUserMarker(winningSet[1].row, winningSet[1].col)
+	) {
+		winningSet.push({ row, col });
+		handleMatchWin(winningSet);
+		return true;
+	}
+	return false;
+}
+function isCellFilled(row, col) {
+	return gridState[row] && gridState[row][col];
+}
+
+function doesCellHaveCurrentUserMarker(row, col) {
+	return gridState[row][col] === currentPlayer;
+}
+
 /**
  * Updates all necessary variables and display upon match win.
  *
  * @param {*} winCondition
  */
-function handleMatchWin(winCondition) {
+function handleMatchWin(winningSet) {
 	updatePlayedMatches();
 	updateScores();
 	updateGameTime();
 
-	highlightVictoryLines(winCondition);
+	highlightVictoryLines(winningSet);
 	handleMatchEnd(`Player ${currentPlayer} has won!`);
 
 	if (hasGameEnded()) {
@@ -418,12 +421,14 @@ function updateGameTime() {
 
 /**
  * Highlights the board markers corresponding to the winning combination.
- * @param Array winCondition - indexes of the winning condition cells.
+ * @param Array winningSet - indexes of the winning condition cells.
  */
-function highlightVictoryLines(winCondition) {
-	for (const index of winCondition) {
+function highlightVictoryLines(winningSet) {
+	for (const cell of winningSet) {
 		let playerIcon = players[currentPlayer].icon + '_bright';
-		gameAreaDisplay.cells[index].innerHTML = `<img src="images/${playerIcon}.svg" alt="x icon" />`;
+		document.getElementById(
+			'cell' + cell.row + cell.col
+		).innerHTML = `<img src="images/${playerIcon}.svg" alt="x icon" />`;
 	}
 }
 
@@ -468,4 +473,71 @@ function hasGameEnded() {
 function scrollToStatsSection() {
 	var statsSection = document.getElementById('stats-section');
 	statsSection.scrollIntoView();
+}
+
+/**
+ * Handles the initialization of a new match or game.
+ */
+function handleStartOver() {
+	gameAreaDisplay.matchOver.display.classList.remove('active');
+	matchTime.value = 0;
+	matchTime.display.innerHTML = '00:00:00';
+
+	if (hasGameEnded()) {
+		resetGame();
+	} else {
+		matchFirstPlayer = matchFirstPlayer === 1 ? 2 : 1;
+		handleMatchStart();
+	}
+}
+
+/**
+ * Resets the game
+ */
+function resetGame() {
+	resetStatsAreaValues();
+	resetGameAreaValues();
+}
+
+/**
+ * Resets all necessary game area variables and displays to start a new game.
+ */
+function resetGameAreaValues() {
+	resetPlayerValues(1);
+	resetPlayerValues(2);
+
+	gameAreaDisplay.gameStart.wholeDisplay.classList.remove('on-going-game');
+	gameAreaDisplay.gameArea.classList.remove('on-going-game');
+}
+
+/**
+ * Resets the local value and display of a given player's total score.
+ * @param Object player
+ */
+function resetPlayerValues(playerID) {
+	let player = players[playerID];
+	player.score = 0;
+	player.icon = null;
+	player.display.score.innerHTML = 0;
+
+	var element = document.getElementById(`player-${playerID}-turn-marker`);
+	element.parentNode.removeChild(element);
+
+	updatePlayerGameVictoriesStats(player, 0);
+}
+
+/**
+ * Resets all local and display values regarding the stats section.
+ */
+function resetStatsAreaValues() {
+	playedMatches = 0;
+	for (let match of statsAreaDisplay.matches) {
+		match.classList.remove('active');
+	}
+	for (let winner of statsAreaDisplay.winners) {
+		winner.innerHTML = '';
+	}
+
+	gameTime.value = 0;
+	gameTime.display.innerHTML = '00:00:00';
 }

@@ -177,15 +177,17 @@ p {
 			}
 
 			#grid-container {
-				display: none;
+				display: grid;
+				width: 100%;
+				height: 100%;
+
+				visibility: hidden;
+				opacity: 0;
+				transition: visibility 0s, opacity 0.2s linear;
 
 				&.on-going-game {
-					display: grid;
-					width: 100%;
-					height: 100%;
-					display: grid;
-					grid-template-columns: repeat(3, 1fr);
-					grid-template-rows: repeat(3, 1fr);
+					visibility: visible;
+					opacity: 1;
 				}
 			}
 
