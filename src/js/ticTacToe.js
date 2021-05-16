@@ -50,6 +50,9 @@ let playedMatches = 0;
 let gameAreaDisplay;
 let statsAreaDisplay;
 
+/**
+ * After the page loads, registers all UI elements to the game logic.
+ */
 window.onload = () => {
 	players[1].display = {
 		score: document.querySelector('#player-1-score .victories'),
@@ -88,12 +91,15 @@ window.onload = () => {
 		winners: document.querySelectorAll('.winner'),
 	};
 
-	gameAreaDisplay.startButton.addEventListener('click', handleStartGame);
+	gameAreaDisplay.startButton.addEventListener('click', handleMatchStart);
 	gameAreaDisplay.gameOver.button.addEventListener('click', handleStartOver);
 	gameAreaDisplay.cells.forEach((cell) => cell.addEventListener('click', handleCellClick));
 };
 
-function handleStartGame() {
+/**
+ * Handles the matches start.
+ */
+function handleMatchStart() {
 	matchStates = [null, null, null, null, null, null, null, null, null];
 	gameAreaDisplay.cells.forEach((cell) => (cell.innerHTML = ''));
 
@@ -106,30 +112,43 @@ function handleStartGame() {
 	setTimer();
 }
 
+/**
+ * Handles the initialization of a new match or game.
+ */
 function handleStartOver() {
 	gameAreaDisplay.gameOver.display.classList.remove('active');
 	matchTime.value = 0;
 	matchTime.display.innerHTML = '00:00:00';
 
-	if (players[1].score === 5 || players[2].score === 5) {
+	if (hasGameEnded()) {
 		resetGameAreaValues();
 		resetStatsAreaValues();
 	}
 
-	handleStartGame();
+	handleMatchStart();
 }
 
+/**
+ * Resets all necessary game area variables and displays to start a new game.
+ */
 function resetGameAreaValues() {
 	resetPlayerValues(players[1]);
 	resetPlayerValues(players[2]);
 }
 
+/**
+ * Resets the local value and display of a given player's total score.
+ * @param Object player
+ */
 function resetPlayerValues(player) {
 	player.score = 0;
 	player.display.score.innerHTML = 0;
 	updatePlayerScores(player, 0, 0);
 }
 
+/**
+ * Resets all local and display values regarding the stats section.
+ */
 function resetStatsAreaValues() {
 	playedMatches = 0;
 	for (let match of statsAreaDisplay.matches) {
@@ -144,16 +163,26 @@ function resetStatsAreaValues() {
 }
 
 let interval;
+
+/**
+ * Sets the timer for the ongoing match.
+ */
 function setTimer() {
 	interval = setInterval(setTime, 1000);
 
 	function setTime() {
 		++matchTime.value;
-		matchTime.display.innerHTML = getParsedTime(matchTime.value);
+		matchTime.display.innerHTML = parseTime(matchTime.value);
 	}
 }
 
-function getParsedTime(time) {
+/**
+ * Parses a given amount of time in seconds into a readable time string.
+ *
+ * @param Number time (in seconds)
+ * @returns the time converted in hours:minutes:seconds.
+ */
+function parseTime(time) {
 	let hours = padTimeUnit(Math.floor(time / 3600));
 	let remainder = time % 3600;
 	let minutes = padTimeUnit(Math.floor(remainder / 60));
@@ -163,6 +192,12 @@ function getParsedTime(time) {
 	return hours + ':' + minutes + ':' + seconds;
 }
 
+/**
+ * Adds a 0 to the left of a given single digit number.
+ *
+ * @param Number val - number to adapt.
+ * @returns a 2 digit number.
+ */
 function padTimeUnit(val) {
 	var valString = val + '';
 	if (valString.length < 2) {
@@ -172,17 +207,27 @@ function padTimeUnit(val) {
 	}
 }
 
+/**
+ * Handles the game area cell click event.
+ * Checks if the cell clicked is a valid play.
+ *
+ * @param {*} clickedCellEvent
+ */
 function handleCellClick(clickedCellEvent) {
 	const clickedCell = clickedCellEvent.target;
 	const clickedCellIndex = parseInt(clickedCell.getAttribute('data-cell-index'));
 
-	if (matchStates[clickedCellIndex] !== null) {
-		return;
+	if (matchStates[clickedCellIndex] === null) {
+		handleCellPlayed(clickedCell, clickedCellIndex);
 	}
-
-	handleCellPlayed(clickedCell, clickedCellIndex);
 }
 
+/**
+ * Updates the played cell state and display.
+ *
+ * @param Object cell
+ * @param Number index
+ */
 function handleCellPlayed(cell, index) {
 	matchStates[index] = currentPlayer;
 	let playerIcon = players[currentPlayer].icon + '_dark';
@@ -191,6 +236,11 @@ function handleCellPlayed(cell, index) {
 	validateTurnResult();
 }
 
+/**
+ * Tests the result of the current match.
+ *
+ * @returns upon game end or player change.
+ */
 function validateTurnResult() {
 	for (const winCondition of winningConditions) {
 		let a = matchStates[winCondition[0]];
@@ -201,53 +251,74 @@ function validateTurnResult() {
 			continue;
 		}
 		if (a === b && b === c) {
-			handleGameWin(winCondition);
+			handleMatchWin(winCondition);
 			return;
 		}
 	}
 
 	let roundDraw = !matchStates.includes(null);
 	if (roundDraw) {
-		handleGameEnd(`Game ended in a draw!`);
+		handleMatchEnd('Match ended in a draw!');
 		return;
 	}
 
-	changeActivePlayers();
+	toggleActivePlayer();
 }
 
-function handleGameWin(winCondition) {
+/**
+ * Updates all necessary variables and display upon match win.
+ * @param {*} winCondition
+ */
+function handleMatchWin(winCondition) {
 	updatePlayedMatches();
 	updateScores();
 	updateGameTime();
 
 	highlightVictoryLines(winCondition);
+	handleMatchEnd(`Player ${currentPlayer} has won!`);
 
-	handleGameEnd(`Player ${currentPlayer} has won!`);
-
-	if (players[1].score === 5 || players[2].score === 5) {
-		var statsSection = document.getElementById('stats-section');
-		statsSection.scrollIntoView();
+	if (hasGameEnded()) {
+		scrollToStatsSection();
 	}
 }
 
+/**
+ * Updates the played matches and game history value and displays.
+ */
 function updatePlayedMatches() {
 	statsAreaDisplay.matches[playedMatches].classList.add('active');
 	statsAreaDisplay.winners[playedMatches].innerHTML = 'P' + currentPlayer;
 	++playedMatches;
 }
 
+/**
+ * Updates the players score in the game and stats area
+ */
 function updateScores() {
-	++players[currentPlayer].score;
-	players[currentPlayer].display.score.innerHTML = players[currentPlayer].score;
+	updateMatchWinnerScore();
 
 	let playerOneVictoriesPercentage = Math.round((players[1].score * 100) / playedMatches);
 	let playerOneLossesPercentage = 100 - playerOneVictoriesPercentage;
 
-	updatePlayerScores(players[1], playerOneVictoriesPercentage, playerOneLossesPercentage);
-	updatePlayerScores(players[2], playerOneLossesPercentage, playerOneVictoriesPercentage);
+	updatePlayerGameVictoriesStats(players[1], playerOneVictoriesPercentage, playerOneLossesPercentage);
+	updatePlayerGameVictoriesStats(players[2], playerOneLossesPercentage, playerOneVictoriesPercentage);
 }
 
-function updatePlayerScores(player, victoriesPercentage, lossesPercentage) {
+/**
+ * Adds a point to the current match winner score.
+ */
+function updateMatchWinnerScore() {
+	++players[currentPlayer].score;
+	players[currentPlayer].display.score.innerHTML = players[currentPlayer].score;
+}
+
+/**
+ * Updates a given player' game victories stats display.
+ * @param Object player 
+ * @param Number victoriesPercentage 
+ * @param Number lossesPercentage 
+ */
+function updatePlayerGameVictoriesStats(player, victoriesPercentage, lossesPercentage) {
 	player.display.victories.innerHTML = victoriesPercentage + '%';
 	player.display.losses.innerHTML = lossesPercentage + '%';
 
@@ -267,11 +338,18 @@ function updatePlayerScores(player, victoriesPercentage, lossesPercentage) {
 	player.display.losses.classList.add(newClass);
 }
 
+/**
+ * Adds the current match time to the total game time.
+ */
 function updateGameTime() {
 	gameTime.value += matchTime.value;
-	gameTime.display.innerHTML = getParsedTime(gameTime.value);
+	gameTime.display.innerHTML = parseTime(gameTime.value);
 }
 
+/**
+ * Highlights the board markers corresponding to the winning combination.
+ * @param Array winCondition - indexes of the winning condition cells.
+ */
 function highlightVictoryLines(winCondition) {
 	for (const index of winCondition) {
 		let playerIcon = players[currentPlayer].icon + '_bright';
@@ -279,7 +357,11 @@ function highlightVictoryLines(winCondition) {
 	}
 }
 
-function handleGameEnd(message) {
+/**
+ * Handles the current match end.
+ * @param String message to show the users regarding the match result.
+ */
+function handleMatchEnd(message) {
 	clearInterval(interval);
 
 	gameAreaDisplay.gameOver.message.innerHTML = message;
@@ -288,11 +370,30 @@ function handleGameEnd(message) {
 	players[currentPlayer].display.turn.classList.remove('active');
 }
 
-function changeActivePlayers() {
+/**
+ * Changes the current active player.
+ */
+function toggleActivePlayer() {
 	let nextPlayer = currentPlayer === 1 ? 2 : 1;
 
 	players[nextPlayer].display.turn.classList.add('active');
 	players[currentPlayer].display.turn.classList.remove('active');
 
 	currentPlayer = nextPlayer;
+}
+
+/**
+ * Checks if the game has ended.
+ * @returns true if the game ended, false otherwise.  
+ */
+function hasGameEnded() {
+	return players[1].score === 5 || players[2].score === 5;
+}
+
+/**
+ * Sends the user to the stats section of the view.
+ */
+function scrollToStatsSection() {
+	var statsSection = document.getElementById('stats-section');
+	statsSection.scrollIntoView();
 }
