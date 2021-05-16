@@ -126,19 +126,29 @@ function setPlayersIcons(player1Marker) {
 
 /**
  * Adds the player turn marker to the view.
- * 
- * @param Number playerID 
- * @param String marker 
+ *
+ * @param Number playerID
+ * @param String marker
  */
 function addPlayerMarkerElement(playerID, marker) {
+	let playerMarkerElement = createPlayerMarkerElement(playerID, marker);
+	document.getElementById(`player-${playerID}-score`).appendChild(addPlayerMarkerElement);
+	players[playerID].display.turn = document.querySelector(`#player-${playerID}-turn-marker`);
+}
+
+/**
+ * Creates a player turn marker element.
+ * @param Number playerID
+ * @param String marker
+ * @returns a new html element.
+ */
+export function createPlayerMarkerElement(playerID, marker) {
 	var elem = document.createElement('img');
 	elem.setAttribute('src', `images/${marker}_dark.svg`);
 	elem.setAttribute('class', 'turn');
 	elem.setAttribute('alt', marker + ' marker');
 	elem.setAttribute('id', `player-${playerID}-turn-marker`);
-	document.getElementById(`player-${playerID}-score`).appendChild(elem);
-
-	players[playerID].display.turn = document.querySelector(`#player-${playerID}-turn-marker`);
+	return elem;
 }
 
 /**
@@ -163,8 +173,8 @@ function handleStartOver() {
 function handleMatchStart() {
 	matchStates = [null, null, null, null, null, null, null, null, null];
 	gameAreaDisplay.cells.forEach((cell) => {
-		cell.innerHTML = ''
-		cell.classList.remove('disabled')
+		cell.innerHTML = '';
+		cell.classList.remove('disabled');
 	});
 
 	currentPlayer = matchFirstPlayer;
@@ -244,7 +254,7 @@ function setTimer() {
  * @param Number time (in seconds)
  * @returns the time converted in hours:minutes:seconds.
  */
-function parseTime(time) {
+export function parseTime(time) {
 	let hours = padTimeUnit(Math.floor(time / 3600));
 	let remainder = time % 3600;
 	let minutes = padTimeUnit(Math.floor(remainder / 60));
@@ -260,7 +270,7 @@ function parseTime(time) {
  * @param Number val - number to adapt.
  * @returns a 2 digit number.
  */
-function padTimeUnit(val) {
+export function padTimeUnit(val) {
 	var valString = val + '';
 	return valString.length < 2 ? '0' + valString : valString;
 }
@@ -290,7 +300,7 @@ function handleCellPlayed(cell, index) {
 	matchStates[index] = currentPlayer;
 	let playerIcon = players[currentPlayer].icon + '_dark';
 	cell.innerHTML = `<img src="images/${playerIcon}.svg" alt="x icon" />`;
-	cell.classList.add('disabled')
+	cell.classList.add('disabled');
 
 	validateTurnResult();
 }
@@ -326,7 +336,7 @@ function validateTurnResult() {
 
 /**
  * Updates all necessary variables and display upon match win.
- * 
+ *
  * @param {*} winCondition
  */
 function handleMatchWin(winCondition) {
@@ -419,7 +429,7 @@ function highlightVictoryLines(winCondition) {
 
 /**
  * Handles the current match end.
- * 
+ *
  * @param String message to show the users regarding the match result.
  */
 function handleMatchEnd(message) {
@@ -445,7 +455,7 @@ function toggleActivePlayer() {
 
 /**
  * Checks if the game has ended.
- * 
+ *
  * @returns true if the game ended, false otherwise.
  */
 function hasGameEnded() {
