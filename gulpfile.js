@@ -69,7 +69,7 @@ gulp.task('sass', () => {
 /**
  * Builds/compiles the entire application.
  */
-gulp.task('default', gulp.series('html', 'scripts', 'unitTest', 'images', 'fonts', 'sass'));
+gulp.task('default', gulp.series('html', 'scripts', 'images', 'fonts', 'sass'));
 
 /**
  * Watches for changes in the development html, js and scss files to update the build folder.
