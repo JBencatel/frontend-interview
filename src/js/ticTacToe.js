@@ -162,7 +162,10 @@ function handleStartOver() {
  */
 function handleMatchStart() {
 	matchStates = [null, null, null, null, null, null, null, null, null];
-	gameAreaDisplay.cells.forEach((cell) => (cell.innerHTML = ''));
+	gameAreaDisplay.cells.forEach((cell) => {
+		cell.innerHTML = ''
+		cell.classList.remove('disabled')
+	});
 
 	currentPlayer = matchFirstPlayer;
 	players[currentPlayer].display.turn.classList.add('active');
@@ -287,6 +290,7 @@ function handleCellPlayed(cell, index) {
 	matchStates[index] = currentPlayer;
 	let playerIcon = players[currentPlayer].icon + '_dark';
 	cell.innerHTML = `<img src="images/${playerIcon}.svg" alt="x icon" />`;
+	cell.classList.add('disabled')
 
 	validateTurnResult();
 }

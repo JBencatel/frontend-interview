@@ -198,8 +198,13 @@ p {
 				align-items: center;
 				justify-content: center;
 
-				&:hover {
-					background-color: rgba(0, 0, 0, 0);
+				&:hover:not(.disabled) {
+					background-color: rgba(0, 0, 0, 0.1);
+				}
+
+				&.disabled{
+					cursor: not-allowed;
+					pointer-events: none;
 				}
 
 				img {
