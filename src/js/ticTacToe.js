@@ -1,6 +1,6 @@
 let players = {
 	1: {
-		icon: 'x',
+		icon: 'X',
 		score: 0,
 		display: {
 			score: null,
@@ -9,7 +9,7 @@ let players = {
 		},
 	},
 	2: {
-		icon: 'o',
+		icon: 'O',
 		score: 0,
 		display: {
 			score: null,
@@ -68,13 +68,16 @@ window.onload = () => {
 	gameTime.display = document.querySelector('#total-time p');
 
 	gameAreaDisplay = {
-		startButton: document.querySelector('#start-game-btn'),
+		gameStart: {
+			wholeDisplay: document.querySelector('#game-start'),
+			buttons: document.querySelectorAll('#game-start .marker'),
+		},
 
 		gameArea: document.querySelector('#grid-container'),
 
 		cells: document.querySelectorAll('.cell'),
 
-		gameOver: {
+		matchOver: {
 			display: document.querySelector('#game-over'),
 			message: document.querySelector('#game-over #game-result'),
 			button: document.querySelector('#game-over #start-over-btn'),
@@ -87,10 +90,56 @@ window.onload = () => {
 		winners: document.querySelectorAll('.winner'),
 	};
 
-	gameAreaDisplay.startButton.addEventListener('click', handleMatchStart);
-	gameAreaDisplay.gameOver.button.addEventListener('click', handleStartOver);
+	gameAreaDisplay.gameStart.buttons.forEach((marker) => marker.addEventListener('click', handleGameStart));
+	gameAreaDisplay.matchOver.button.addEventListener('click', handleStartOver);
 	gameAreaDisplay.cells.forEach((cell) => cell.addEventListener('click', handleCellClick));
 };
+
+/**
+ * Handle the game start.
+ *
+ * @param {*} markerClickEvent
+ */
+function handleGameStart(markerClickEvent) {
+	const clickedMarker = markerClickEvent.target;
+	const clickedMarkerIcon = clickedMarker.getAttribute('data-marker');
+	setPlayersIcons(clickedMarkerIcon);
+
+	gameAreaDisplay.gameStart.wholeDisplay.classList.add('on-going-game');
+	gameAreaDisplay.gameArea.classList.add('on-going-game');
+
+	handleMatchStart();
+}
+
+/**
+ * Set both players game marker icons.
+ *
+ * @param String player1Marker
+ */
+function setPlayersIcons(player1Marker) {
+	players[1].icon = player1Marker;
+	if (player1Marker === 'X') {
+		players[2].icon = 'O';
+	} else if (player1Marker === 'O') {
+		players[2].icon = 'X';
+	}
+}
+
+/**
+ * Handles the initialization of a new match or game.
+ */
+function handleStartOver() {
+	gameAreaDisplay.matchOver.display.classList.remove('active');
+	matchTime.value = 0;
+	matchTime.display.innerHTML = '00:00:00';
+
+	if (hasGameEnded()) {
+		resetStatsAreaValues();
+		resetGameAreaValues();
+	} else {
+		handleMatchStart();
+	}
+}
 
 /**
  * Handles the matches start.
@@ -99,29 +148,10 @@ function handleMatchStart() {
 	matchStates = [null, null, null, null, null, null, null, null, null];
 	gameAreaDisplay.cells.forEach((cell) => (cell.innerHTML = ''));
 
-	gameAreaDisplay.startButton.classList.add('on-going-game');
-	gameAreaDisplay.gameArea.classList.add('on-going-game');
-
 	currentPlayer = 1;
 	players[currentPlayer].display.turn.classList.add('active');
 
 	setTimer();
-}
-
-/**
- * Handles the initialization of a new match or game.
- */
-function handleStartOver() {
-	gameAreaDisplay.gameOver.display.classList.remove('active');
-	matchTime.value = 0;
-	matchTime.display.innerHTML = '00:00:00';
-
-	if (hasGameEnded()) {
-		resetStatsAreaValues();
-		resetGameAreaValues();
-	}
-
-	handleMatchStart();
 }
 
 /**
@@ -130,6 +160,9 @@ function handleStartOver() {
 function resetGameAreaValues() {
 	resetPlayerValues(players[1]);
 	resetPlayerValues(players[2]);
+
+	gameAreaDisplay.gameStart.wholeDisplay.classList.remove('on-going-game');
+	gameAreaDisplay.gameArea.classList.remove('on-going-game');
 }
 
 /**
@@ -138,6 +171,7 @@ function resetGameAreaValues() {
  */
 function resetPlayerValues(player) {
 	player.score = 0;
+	player.icon = null;
 	player.display.score.innerHTML = 0;
 	updatePlayerGameVictoriesStats(player, 0);
 }
@@ -360,8 +394,8 @@ function highlightVictoryLines(winCondition) {
 function handleMatchEnd(message) {
 	clearInterval(interval);
 
-	gameAreaDisplay.gameOver.message.innerHTML = message;
-	gameAreaDisplay.gameOver.display.classList.add('active');
+	gameAreaDisplay.matchOver.message.innerHTML = message;
+	gameAreaDisplay.matchOver.display.classList.add('active');
 
 	players[currentPlayer].display.turn.classList.remove('active');
 }

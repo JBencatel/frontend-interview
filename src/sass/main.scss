@@ -128,19 +128,51 @@ p {
 				order: 1;
 			}
 
-			#start-game-btn,
-			#start-over-btn {
-				font-size: 1.5em;
-				font-weight: bold;
+			#game-start {
+				height: 100%;
+				width: 100%;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
 
-				&:hover {
-					color: $primary-button;
-				}
-			}
-
-			#start-game-btn {
 				&.on-going-game {
 					display: none;
+				}
+
+				#game-start-instructions {
+					font-size: 1.1em;
+					margin-bottom: 1em;
+				}
+
+				#game-start-markers {
+					width: 100%;
+					justify-content: center;
+
+					.marker {
+						background-repeat: no-repeat;
+						background-size: auto;
+						height: 75px;
+						width: 75px;
+						margin: 2vh;
+						cursor: pointer;
+					}
+
+					#x-marker {
+						background-image: url('../images/X_dark.svg');
+
+						&:hover {
+							background-image: url('../images/X_bright.svg');
+						}
+					}
+
+					#o-marker {
+						background-image: url('../images/O_dark.svg');
+
+						&:hover {
+							background-image: url('../images/O_bright.svg');
+						}
+					}
 				}
 			}
 
@@ -166,15 +198,14 @@ p {
 				align-items: center;
 				justify-content: center;
 
-				&:hover{
-					background-color: rgba(0, 0, 0, 0.1);
+				&:hover {
+					background-color: rgba(0, 0, 0, 0);
 				}
 
 				img {
 					max-width: 90%;
 					max-height: 90%;
 				}
-
 			}
 
 			#game-over {
@@ -202,6 +233,15 @@ p {
 
 					span {
 						margin: 1em;
+					}
+
+					#start-over-btn {
+						font-size: 1.5em;
+						font-weight: bold;
+
+						&:hover {
+							color: $primary-button;
+						}
 					}
 				}
 			}

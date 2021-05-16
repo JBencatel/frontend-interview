@@ -69,7 +69,14 @@
 						</div>
 
 						<div class="col-4 row" id="game-area">
-							<span class="btn" id="start-game-btn">Start game</span>
+							<div id="game-start">
+								<span id="game-start-instructions">Player 1: Select a marker to start the game</span>
+
+								<div class="row" id="game-start-markers">
+									<div class="marker" id="x-marker" data-marker="X"></div>
+									<div class="marker" id="o-marker" data-marker="O"></div>
+								</div>
+							</div>
 
 							<div id="grid-container">
 								<div data-cell-index="0" class="cell"></div>
@@ -85,7 +92,7 @@
 
 							<div id="game-over">
 								<span id="game-result">message</span>
-								<span class="btn" id="start-over-btn">Start over?</span>
+								<span class="btn" id="start-over-btn">New match?</span>
 							</div>
 						</div>
 
