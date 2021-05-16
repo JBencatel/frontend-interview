@@ -58,6 +58,8 @@ window.onload = () => {
 	gameTime.display = document.querySelector('#total-time p');
 
 	gameAreaDisplay = {
+		gridSelectionButtons: document.querySelectorAll('.grid-option-btn'),
+
 		gameStart: {
 			wholeDisplay: document.querySelector('#game-start'),
 			buttons: document.querySelectorAll('#game-start .marker'),
@@ -78,9 +80,25 @@ window.onload = () => {
 		winners: document.querySelectorAll('.winner'),
 	};
 
+	gameAreaDisplay.gridSelectionButtons.forEach((button) => button.addEventListener('click', handleGridSelection));
 	gameAreaDisplay.gameStart.buttons.forEach((marker) => marker.addEventListener('click', handleGameStart));
 	gameAreaDisplay.matchOver.button.addEventListener('click', handleStartOver);
 };
+
+/**
+ * Handles the grid selection button click.
+ * 
+ * @param {*} buttonClickEvent 
+ */
+function handleGridSelection(buttonClickEvent) {
+	let selectedGridButton = buttonClickEvent.target;
+	let selectedGridOption = selectedGridButton.getAttribute('data-grid-option');
+	if (selectedGridOption !== gameNrRowsPerColumns) {
+		gameNrRowsPerColumns = selectedGridOption;
+		document.querySelector('.grid-option-btn.selected').classList.remove('selected');
+		selectedGridButton.classList.add('selected');
+	}
+}
 
 /**
  * Handle the game start.
@@ -95,6 +113,8 @@ function handleGameStart(markerClickEvent) {
 	gameAreaDisplay.gameStart.wholeDisplay.classList.add('on-going-game');
 	gameAreaDisplay.gameArea.classList.add('on-going-game');
 	prepareGridViewElements();
+
+	gameAreaDisplay.gridSelectionButtons.forEach((button) => button.classList.add('disabled'));
 
 	matchFirstPlayer = 1;
 	handleMatchStart();
@@ -291,7 +311,7 @@ function validateTurnResult(row, col) {
 	for (const set of Object.values(possibleSets)) {
 		if (isWinningSet(row, col, set.rowChange, set.colChange)) {
 			return;
-		} 
+		}
 	}
 
 	let flatGridState = gridState.flat();
@@ -508,6 +528,10 @@ function resetGameAreaValues() {
 
 	gameAreaDisplay.gameStart.wholeDisplay.classList.remove('on-going-game');
 	gameAreaDisplay.gameArea.classList.remove('on-going-game');
+
+	gameAreaDisplay.gameArea.innerHTML = "";
+	gameAreaDisplay.gridSelectionButtons.forEach((button) => button.classList.remove('disabled'));
+
 }
 
 /**

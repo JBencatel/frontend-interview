@@ -98,6 +98,41 @@ p {
 	background-color: $primary-light;
 	text-align: center;
 
+	#grid-selection {
+		width: 100%;
+		justify-content: center;
+		align-items: center;
+
+		.grid-option-btn {
+			padding: 0.5em 0;
+			margin: 10px;
+			background-color: white;
+			border-radius: 5px;
+			border: 0.1px solid $grey;
+			cursor: pointer;
+
+			&.disabled:not(.selected) {
+				color: rgba(0, 0, 0, 0.5);
+				pointer-events: none;
+			}
+
+			&.selected {
+				background-color: $primary-dark;
+				color: white;
+				font-weight: bold;
+				pointer-events: none;
+
+				&.disabled {
+					background-color: $grey;
+				}
+			}
+
+			@media (max-width: 600px) {
+				width: 25%;
+			}
+		}
+	}
+
 	#game-main {
 		width: 100%;
 		align-items: center;
