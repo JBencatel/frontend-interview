@@ -259,10 +259,13 @@ p {
 			}
 
 			.turn {
-				visibility: hidden;
+				width: 75px;
+				height: 75px;
+				margin-top: 1em;
+				opacity: 0.2;
 
 				&.active {
-					visibility: visible;
+					opacity: 1;
 				}
 			}
 		}

@@ -19,6 +19,7 @@ let players = {
 	},
 };
 
+let matchFirstPlayer = 1;
 let currentPlayer = 1;
 let matchStates = [null, null, null, null, null, null, null, null, null];
 
@@ -54,13 +55,11 @@ let statsAreaDisplay;
 window.onload = () => {
 	players[1].display = {
 		score: document.querySelector('#player-1-score .victories'),
-		turn: document.querySelector('#player-1-score .turn'),
 		victoriesPercentage: document.querySelector('#player-1-victories .value'),
 	};
 
 	players[2].display = {
 		score: document.querySelector('#player-2-score .victories'),
-		turn: document.querySelector('#player-2-score .turn'),
 		victoriesPercentage: document.querySelector('#player-2-victories .value'),
 	};
 
@@ -108,6 +107,7 @@ function handleGameStart(markerClickEvent) {
 	gameAreaDisplay.gameStart.wholeDisplay.classList.add('on-going-game');
 	gameAreaDisplay.gameArea.classList.add('on-going-game');
 
+	matchFirstPlayer = 1;
 	handleMatchStart();
 }
 
@@ -118,11 +118,27 @@ function handleGameStart(markerClickEvent) {
  */
 function setPlayersIcons(player1Marker) {
 	players[1].icon = player1Marker;
-	if (player1Marker === 'X') {
-		players[2].icon = 'O';
-	} else if (player1Marker === 'O') {
-		players[2].icon = 'X';
-	}
+	addPlayerMarkerElement(1, player1Marker);
+
+	players[2].icon = player1Marker === 'X' ? 'O' : 'X';
+	addPlayerMarkerElement(2, players[2].icon);
+}
+
+/**
+ * Adds the player turn marker to the view.
+ * 
+ * @param Number playerID 
+ * @param String marker 
+ */
+function addPlayerMarkerElement(playerID, marker) {
+	var elem = document.createElement('img');
+	elem.setAttribute('src', `images/${marker}_dark.svg`);
+	elem.setAttribute('class', 'turn');
+	elem.setAttribute('alt', marker + ' marker');
+	elem.setAttribute('id', `player-${playerID}-turn-marker`);
+	document.getElementById(`player-${playerID}-score`).appendChild(elem);
+
+	players[playerID].display.turn = document.querySelector(`#player-${playerID}-turn-marker`);
 }
 
 /**
@@ -134,9 +150,9 @@ function handleStartOver() {
 	matchTime.display.innerHTML = '00:00:00';
 
 	if (hasGameEnded()) {
-		resetStatsAreaValues();
-		resetGameAreaValues();
+		resetGame();
 	} else {
+		matchFirstPlayer = matchFirstPlayer === 1 ? 2 : 1;
 		handleMatchStart();
 	}
 }
@@ -148,18 +164,26 @@ function handleMatchStart() {
 	matchStates = [null, null, null, null, null, null, null, null, null];
 	gameAreaDisplay.cells.forEach((cell) => (cell.innerHTML = ''));
 
-	currentPlayer = 1;
+	currentPlayer = matchFirstPlayer;
 	players[currentPlayer].display.turn.classList.add('active');
 
 	setTimer();
 }
 
 /**
+ * Resets the game
+ */
+function resetGame() {
+	resetStatsAreaValues();
+	resetGameAreaValues();
+}
+
+/**
  * Resets all necessary game area variables and displays to start a new game.
  */
 function resetGameAreaValues() {
-	resetPlayerValues(players[1]);
-	resetPlayerValues(players[2]);
+	resetPlayerValues(1);
+	resetPlayerValues(2);
 
 	gameAreaDisplay.gameStart.wholeDisplay.classList.remove('on-going-game');
 	gameAreaDisplay.gameArea.classList.remove('on-going-game');
@@ -169,10 +193,15 @@ function resetGameAreaValues() {
  * Resets the local value and display of a given player's total score.
  * @param Object player
  */
-function resetPlayerValues(player) {
+function resetPlayerValues(playerID) {
+	let player = players[playerID];
 	player.score = 0;
 	player.icon = null;
 	player.display.score.innerHTML = 0;
+
+	var element = document.getElementById(`player-${playerID}-turn-marker`);
+	element.parentNode.removeChild(element);
+
 	updatePlayerGameVictoriesStats(player, 0);
 }
 
@@ -230,11 +259,7 @@ function parseTime(time) {
  */
 function padTimeUnit(val) {
 	var valString = val + '';
-	if (valString.length < 2) {
-		return '0' + valString;
-	} else {
-		return valString;
-	}
+	return valString.length < 2 ? '0' + valString : valString;
 }
 
 /**
@@ -297,6 +322,7 @@ function validateTurnResult() {
 
 /**
  * Updates all necessary variables and display upon match win.
+ * 
  * @param {*} winCondition
  */
 function handleMatchWin(winCondition) {
@@ -389,6 +415,7 @@ function highlightVictoryLines(winCondition) {
 
 /**
  * Handles the current match end.
+ * 
  * @param String message to show the users regarding the match result.
  */
 function handleMatchEnd(message) {
@@ -414,6 +441,7 @@ function toggleActivePlayer() {
 
 /**
  * Checks if the game has ended.
+ * 
  * @returns true if the game ended, false otherwise.
  */
 function hasGameEnded() {
