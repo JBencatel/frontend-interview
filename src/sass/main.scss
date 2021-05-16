@@ -259,37 +259,34 @@ p {
 				margin-top: 0;
 				font-size: 1.5em;
 			}
-		}
 
-		.percentage-section {
-			@media (max-width: 600px) {
-				width: 50%;
-			}
-		}
-
-		.value {
-			height: 50px;
-			width: 50px;
-			margin: auto;
-			font-weight: bold;
-			border-radius: 50%;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-
-			&.winning {
-				background-color: $green;
+			.value {
+				height: 75px;
+				width: 75px;
+				margin: auto;
+				font-weight: bold;
+				border-radius: 50%;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-size: 1.2em;
+				background-color: $primary-dark;
 				color: white;
-			}
 
-			&.losing {
-				background-color: red;
-				color: white;
-			}
+				&.winning {
+					background-color: $green;
+					color: white;
+				}
 
-			&.draw {
-				background-color: $yellow;
-				color: $primary-dark;
+				&.losing {
+					background-color: red;
+					color: white;
+				}
+
+				&.draw {
+					background-color: $yellow;
+					color: $primary-dark;
+				}
 			}
 		}
 	}

@@ -5,8 +5,7 @@ let players = {
 		display: {
 			score: null,
 			turn: null,
-			victories: null,
-			losses: null,
+			victoriesPercentage: null,
 		},
 	},
 	2: {
@@ -15,8 +14,7 @@ let players = {
 		display: {
 			score: null,
 			turn: null,
-			victories: null,
-			losses: null,
+			victoriesPercentage: null,
 		},
 	},
 };
@@ -57,15 +55,13 @@ window.onload = () => {
 	players[1].display = {
 		score: document.querySelector('#player-1-score .victories'),
 		turn: document.querySelector('#player-1-score .turn'),
-		victories: document.querySelector('#player-1-victories .victory-percentage .value'),
-		losses: document.querySelector('#player-1-victories .loss-percentage .value'),
+		victoriesPercentage: document.querySelector('#player-1-victories .value'),
 	};
 
 	players[2].display = {
 		score: document.querySelector('#player-2-score .victories'),
 		turn: document.querySelector('#player-2-score .turn'),
-		victories: document.querySelector('#player-2-victories .victory-percentage .value'),
-		losses: document.querySelector('#player-2-victories .loss-percentage .value'),
+		victoriesPercentage: document.querySelector('#player-2-victories .value'),
 	};
 
 	matchTime.display = document.querySelector('#timer h2');
@@ -121,8 +117,8 @@ function handleStartOver() {
 	matchTime.display.innerHTML = '00:00:00';
 
 	if (hasGameEnded()) {
-		resetGameAreaValues();
 		resetStatsAreaValues();
+		resetGameAreaValues();
 	}
 
 	handleMatchStart();
@@ -143,7 +139,7 @@ function resetGameAreaValues() {
 function resetPlayerValues(player) {
 	player.score = 0;
 	player.display.score.innerHTML = 0;
-	updatePlayerScores(player, 0, 0);
+	updatePlayerGameVictoriesStats(player, 0);
 }
 
 /**
@@ -298,10 +294,10 @@ function updateScores() {
 	updateMatchWinnerScore();
 
 	let playerOneVictoriesPercentage = Math.round((players[1].score * 100) / playedMatches);
-	let playerOneLossesPercentage = 100 - playerOneVictoriesPercentage;
+	let playerTwoVictoriesPercentage = 100 - playerOneVictoriesPercentage;
 
-	updatePlayerGameVictoriesStats(players[1], playerOneVictoriesPercentage, playerOneLossesPercentage);
-	updatePlayerGameVictoriesStats(players[2], playerOneLossesPercentage, playerOneVictoriesPercentage);
+	updatePlayerGameVictoriesStats(players[1], playerOneVictoriesPercentage);
+	updatePlayerGameVictoriesStats(players[2], playerTwoVictoriesPercentage);
 }
 
 /**
@@ -314,28 +310,28 @@ function updateMatchWinnerScore() {
 
 /**
  * Updates a given player' game victories stats display.
- * @param Object player 
- * @param Number victoriesPercentage 
- * @param Number lossesPercentage 
+ *
+ * @param Object player
+ * @param Number victoriesPercentage
  */
-function updatePlayerGameVictoriesStats(player, victoriesPercentage, lossesPercentage) {
-	player.display.victories.innerHTML = victoriesPercentage + '%';
-	player.display.losses.innerHTML = lossesPercentage + '%';
+function updatePlayerGameVictoriesStats(player, victoriesPercentage) {
+	player.display.victoriesPercentage.innerHTML = victoriesPercentage + '%';
 
-	let newClass = 'draw';
-	if (victoriesPercentage === lossesPercentage) {
-		newClass = 'draw';
-	} else if (victoriesPercentage > lossesPercentage) {
-		newClass = 'winning';
-	} else {
-		newClass = 'losing';
+	let newClass = '';
+	if (playedMatches > 0) {
+		if (victoriesPercentage == 50) {
+			newClass = 'draw';
+		} else if (victoriesPercentage > 50) {
+			newClass = 'winning';
+		} else if (victoriesPercentage < 50) {
+			newClass = 'losing';
+		}
 	}
 
-	player.display.victories.classList.remove('winning', 'losing', 'draw');
-	player.display.victories.classList.add(newClass);
-
-	player.display.losses.classList.remove('winning', 'losing', 'draw');
-	player.display.losses.classList.add(newClass);
+	player.display.victoriesPercentage.classList.remove('winning', 'losing', 'draw');
+	if (newClass !== '') {
+		player.display.victoriesPercentage.classList.add(newClass);
+	}
 }
 
 /**
@@ -384,7 +380,7 @@ function toggleActivePlayer() {
 
 /**
  * Checks if the game has ended.
- * @returns true if the game ended, false otherwise.  
+ * @returns true if the game ended, false otherwise.
  */
 function hasGameEnded() {
 	return players[1].score === 5 || players[2].score === 5;
