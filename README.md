@@ -65,3 +65,23 @@ Select box to change game grid (3x3, 6x6, 9x9)
 ##### 4-in-a-row game
 - Filter on top of game section (3) to toggle game with this being 4-in-a-row.
 - Both games should be functional and respect the requirements stated above.
+
+
+
+___
+## Project documentation:
+
+### Project setup
+```
+npm install
+```
+
+### Compiles and minifies for production
+```
+npm run build
+```
+or 
+```
+gulp
+```
+In any instance, you'll probably need to have gulp installed to be able to build.
