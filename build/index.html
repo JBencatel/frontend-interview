@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+		<title>Frontend Interview</title>
+
+		<link rel="stylesheet" type="text/css" media="screen" href="css/main.css" />
+		<script src="js/main.js"></script>
+	</head>
+
+	<body>
+		<header id="top-header">
+			<div class="row outer-container" id="header-container">
+				<img src="images/SWORD_Health_logo.svg" alt="SWORD Health logo" style="height: 50%" />
+
+				<div id="title-container">
+					<div><b>Frontend developer</b></div>
+					<div><i>Challenge</i></div>
+				</div>
+			</div>
+		</header>
+
+		<main id="main">
+			<div class="section" id="profile-section">
+				<div class="row container">
+					<div class="col-3 row" style="justify-content: center">
+						<img id="photo" src="images/profile_pic.jpg" alt="Profile picture" />
+					</div>
+
+					<div class="col-3">
+						<div style="padding: 0 20px">
+							<h1 style="font-weight: normal">Joana Bencatel</h1>
+							<p>Age: 28</p>
+							<p>Location: Porto</p>
+							<p>Occupation: Software Developer</p>
+						</div>
+					</div>
+
+					<div class="col-1"></div>
+					<div class="col-5 content-to-hide" style="text-align: right">
+						<p>About me:</p>
+						<p>
+							My name is Joana Bencatel and I'm a Software Developer, with a background in Biology, but my
+							interests extend to many other areas like Graphic Design, Digital Marketing and subjects
+							related to entrepreneurship and business. I love to solve "puzzles", mentor and help others,
+							create things and pursue new ideas. I would say that my best qualities are my ability to
+							work in teams, but also to lead, and my curiosity and eagerness to learn more, by myself or
+							from others, and constantly evolve and grow both personally and professionally.
+						</p>
+					</div>
+				</div>
+			</div>
+
+			<div class="section col" id="tic-tac-toe-section">
+				<div class="row container">
+					<header id="game-header" class="col-12">
+						<h2>Tic tac toe games</h2>
+						<p>Welcome to the best game in the world.</p>
+					</header>
+
+					<div class="row" id="grid-selection">
+						<div class="col-1 grid-option-btn selected" data-grid-option="3">3 x 3</div>
+						<div class="col-1 grid-option-btn" data-grid-option="6">6 x 6</div>
+						<div class="col-1 grid-option-btn" data-grid-option="9">9 x 9</div>
+					</div>
+
+					<div class="row" id="game-main">
+						<div class="col-4 player" id="player-1-score">
+							<h2 class="player-name">Player 1</h2>
+							<p class="victories">0</p>
+						</div>
+
+						<div class="col-4 player" id="player-2-score">
+							<h2 class="player-name">Player 2</h2>
+							<p class="victories">0</p>
+						</div>
+
+						<div class="col-4 row" id="game-area">
+							<div id="game-start">
+								<span id="game-start-instructions">Player 1: Select a marker to start the game</span>
+
+								<div class="row" id="game-start-markers">
+									<div class="marker" id="x-marker" data-marker="X"></div>
+									<div class="marker" id="o-marker" data-marker="O"></div>
+								</div>
+							</div>
+
+							<div id="grid-container">
+							</div>
+
+							<div id="game-over">
+								<span id="game-result">message</span>
+								<span class="btn" id="start-over-btn">New match?</span>
+							</div>
+						</div>
+
+						<div class="col-12" id="timer">
+							<h2 style="font-weight: normal">00:00:00</h2>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="section" id="stats-section">
+				<header id="game-header" class="col-12">
+					<h2>Awesome statistics</h2>
+					<p>All statistics in place1</p>
+				</header>
+
+				<div class="row" style="justify-content: space-around">
+					<div class="col-4" id="game-victories">
+						<h3>Game victories %</h3>
+
+						<div class="row">
+							<div class="col-6 player" id="player-1-victories">
+								<p class="player-name">Player 1</p>
+								<div class="value">0%</div>
+							</div>
+
+							<div class="col-6 player" id="player-2-victories">
+								<p class="player-name">Player 2</p>
+								<div class="value">0%</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="col col-4">
+						<div class="col" id="player-matches">
+							<h3>Played matches</h3>
+							<div class="row" id="player-matches-states">
+								<div class="game-match"></div>
+								<div class="game-match"></div>
+								<div class="game-match"></div>
+								<div class="game-match"></div>
+								<div class="game-match"></div>
+								<div class="game-match"></div>
+								<div class="game-match"></div>
+								<div class="game-match"></div>
+								<div class="game-match"></div>
+							</div>
+						</div>
+
+						<div class="col" id="game-history">
+							<h3>Game history</h3>
+							<div class="row" id="match-winners">
+								<div class="winner"></div>
+								<div class="winner"></div>
+								<div class="winner"></div>
+								<div class="winner"></div>
+								<div class="winner"></div>
+								<div class="winner"></div>
+								<div class="winner"></div>
+								<div class="winner"></div>
+								<div class="winner"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div id="total-time" class="col-12">
+					<h3>Total time</h3>
+					<p>00:00:00</p>
+				</div>
+			</div>
+
+			<footer id="footer">
+				<div class="row">
+					<div class="col-4">
+						<h3>About page</h3>
+
+						<p>Play tic tac toe or 4-in-a-row anytime!</p>
+						<p>Created by @Joana Bencatel</p>
+					</div>
+
+					<div class="col-4">
+						<h3>Contacts</h3>
+
+						<p>(+351) 123 456 789</p>
+						<p>Rua Sá da Bandeira, 111, Porto</p>
+					</div>
+
+					<div class="col-4">
+						<h3>Stay in touch</h3>
+
+						<div>
+							<img src="images/facebook.svg" alt="Facebook logo" class="social-network-icon btn" />
+							<img src="images/twitter.svg" alt="Twitter logo" class="social-network-icon btn" />
+							<img src="images/instagram.svg" alt="Instagram logo" class="social-network-icon btn" />
+						</div>
+
+						<div id="subscribe-prompt" class="row">
+							<input type="mail" placeholder="Subscribe our games" name="subscribe" />
+							<div class="btn" id="subscribe-btn">
+								<img src="images/send.svg" alt="Subscribe button" style="height: 100%" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</footer>
+		</main>
+	</body>
+</html>
